@@ -37,6 +37,7 @@ from mcp.client.auth.utils import (
     handle_token_response_scopes,
     is_valid_client_metadata_url,
     issuers_match,
+    parse_scopes,
     should_use_client_metadata_url,
     union_scopes,
     validate_authorization_response_iss,
@@ -421,7 +422,7 @@ class OAuthClientProvider(RedirectAwareAuth):
 
             # OIDC requires prompt=consent when offline_access is requested
             # https://openid.net/specs/openid-connect-core-1_0.html#OfflineAccess
-            if "offline_access" in self.context.client_metadata.scope.split():
+            if "offline_access" in parse_scopes(self.context.client_metadata.scope):
                 auth_params["prompt"] = "consent"
 
         authorization_url = f"{auth_endpoint}?{urlencode(auth_params)}"
